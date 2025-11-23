@@ -1,0 +1,6 @@
+apiVersion: v2
+name: funcapp
+description: Demonstrates Helm template functions and pipelines
+type: application
+version: 0.1.0
+appVersion: "1.0"

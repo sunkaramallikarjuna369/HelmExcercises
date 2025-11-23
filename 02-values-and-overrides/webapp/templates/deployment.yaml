@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-webapp
+  labels:
+    app: {{ .Release.Name }}-webapp
+    environment: {{ .Values.environment }}
+    team: {{ .Values.labels.team }}
+    costCenter: {{ .Values.labels.costCenter }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-webapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-webapp
+        environment: {{ .Values.environment }}
+    spec:
+      containers:
+      - name: webapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+        env:
+        - name: ENVIRONMENT
+          value: {{ .Values.environment | quote }}
+        - name: LOG_LEVEL
+          value: {{ .Values.config.logLevel | quote }}
+        - name: DEBUG_MODE
+          value: {{ .Values.config.debugMode | quote }}
+        - name: MAX_CONNECTIONS
+          value: {{ .Values.config.maxConnections | quote }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}

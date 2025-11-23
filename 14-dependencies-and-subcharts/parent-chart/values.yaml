@@ -1,0 +1,17 @@
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: "1.25"
+  pullPolicy: IfNotPresent
+
+redis-subchart:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: redis
+    tag: "7.0"
+
+global:
+  environment: production
+  domain: example.com

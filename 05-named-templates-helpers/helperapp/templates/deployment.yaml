@@ -1,0 +1,27 @@
+apiVersion: {{ include "helperapp.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ include "helperapp.fullname" . }}
+  labels:
+    {{- include "helperapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "helperapp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- include "helperapp.annotations" . | nindent 8 }}
+      labels:
+        {{- include "helperapp.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ include "helperapp.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        {{- include "helperapp.resources" . | nindent 8 }}

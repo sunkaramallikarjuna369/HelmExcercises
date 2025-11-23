@@ -1,0 +1,32 @@
+replicaCount: 2
+
+image:
+  repository: nginx
+  tag: ""
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+annotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9090"
+
+labels:
+  app: myapp
+  tier: frontend
+  version: v1
+
+config:
+  database:
+    host: db.example.com
+    port: 5432
+    name: mydb
+  features:
+    - authentication
+    - logging
+    - monitoring
+  settings:
+    timeout: 30
+    retries: 3

@@ -1,0 +1,27 @@
+replicaCount: 2
+
+image:
+  repository: nginx
+  tag: "1.25"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  nodePort: 30080
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: myapp.local
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: api.myapp.local
+      paths:
+        - path: /api
+          pathType: Prefix
+  tls: []

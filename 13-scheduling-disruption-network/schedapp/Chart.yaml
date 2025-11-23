@@ -1,0 +1,6 @@
+apiVersion: v2
+name: schedapp
+description: Pod scheduling, disruption budgets, and network policies
+type: application
+version: 0.1.0
+appVersion: "1.0"

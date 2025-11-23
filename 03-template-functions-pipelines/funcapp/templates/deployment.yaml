@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-funcapp
+  labels:
+    app: {{ .Release.Name }}-funcapp
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    {{- toYaml .Values.annotations | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-funcapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-funcapp
+        {{- range $key, $val := .Values.labels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: funcapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: APP_NAME
+          value: {{ .Release.Name | upper | quote }}
+        - name: NAMESPACE
+          value: {{ .Release.Namespace | quote }}
+        - name: DB_CONNECTION
+          value: {{ printf "%s:%d/%s" .Values.config.database.host (int .Values.config.database.port) .Values.config.database.name | quote }}
+        - name: FEATURES
+          value: {{ .Values.config.features | join "," | quote }}
+        - name: TIMEOUT
+          value: {{ .Values.config.settings.timeout | toString | quote }}
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Release.Name }}-funcapp-config

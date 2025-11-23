@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-hookapp
+  labels:
+    app: {{ .Release.Name }}-hookapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-hookapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-hookapp
+    spec:
+      containers:
+      - name: hookapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80

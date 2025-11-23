@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-secureapp
+  labels:
+    app: {{ .Release.Name }}-secureapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-secureapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-secureapp
+    spec:
+      containers:
+      - name: secureapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80

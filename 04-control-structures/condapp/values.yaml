@@ -1,0 +1,52 @@
+replicaCount: 2
+
+image:
+  repository: nginx
+  tag: "1.25"
+  pullPolicy: IfNotPresent
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: nginx
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    enabled: false
+    secretName: app-tls
+
+persistence:
+  enabled: false
+  storageClass: ""
+  size: 1Gi
+
+monitoring:
+  enabled: true
+  metrics:
+    - name: cpu
+      threshold: 80
+    - name: memory
+      threshold: 75
+    - name: requests
+      threshold: 1000
+
+features:
+  authentication: true
+  logging: true
+  caching: false
+  tracing: false
+
+environments:
+  - name: development
+    replicas: 1
+  - name: staging
+    replicas: 2
+  - name: production
+    replicas: 3

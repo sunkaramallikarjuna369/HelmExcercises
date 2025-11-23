@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-scaleapp
+  labels:
+    app: {{ .Release.Name }}-scaleapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-scaleapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-scaleapp
+    spec:
+      containers:
+      - name: scaleapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80

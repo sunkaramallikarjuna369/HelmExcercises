@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-pluginapp
+  labels:
+    app: {{ .Release.Name }}-pluginapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-pluginapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-pluginapp
+    spec:
+      containers:
+      - name: pluginapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80

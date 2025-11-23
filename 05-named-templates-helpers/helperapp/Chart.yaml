@@ -1,0 +1,6 @@
+apiVersion: v2
+name: helperapp
+description: Demonstrates named templates and helper functions
+type: application
+version: 0.1.0
+appVersion: "1.0"

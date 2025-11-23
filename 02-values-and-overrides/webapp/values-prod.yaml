@@ -1,0 +1,19 @@
+environment: production
+
+replicaCount: 3
+
+config:
+  logLevel: warn
+  debugMode: false
+  maxConnections: 500
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+service:
+  type: NodePort

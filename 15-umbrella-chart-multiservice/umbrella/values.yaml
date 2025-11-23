@@ -1,0 +1,37 @@
+global:
+  environment: production
+  domain: myapp.com
+  imageRegistry: docker.io
+
+frontend:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: nginx
+    tag: "1.25"
+  service:
+    type: ClusterIP
+    port: 80
+
+backend:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: nginx
+    tag: "1.25"
+  service:
+    type: ClusterIP
+    port: 8080
+
+database:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: postgres
+    tag: "15"
+  service:
+    type: ClusterIP
+    port: 5432
+  persistence:
+    enabled: true
+    size: 1Gi

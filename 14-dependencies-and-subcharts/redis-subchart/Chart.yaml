@@ -1,0 +1,6 @@
+apiVersion: v2
+name: redis-subchart
+description: A Redis subchart for demonstrating dependencies
+type: application
+version: 0.1.0
+appVersion: "7.0"

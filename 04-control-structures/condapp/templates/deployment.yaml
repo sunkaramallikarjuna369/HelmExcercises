@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-condapp
+  labels:
+    app: {{ .Release.Name }}-condapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-condapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-condapp
+      {{- if .Values.monitoring.enabled }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+      {{- end }}
+    spec:
+      containers:
+      - name: condapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+          name: http
+        {{- if .Values.monitoring.enabled }}
+        - containerPort: 9090
+          name: metrics
+        {{- end }}
+        env:
+        {{- if .Values.features.authentication }}
+        - name: AUTH_ENABLED
+          value: "true"
+        {{- else }}
+        - name: AUTH_ENABLED
+          value: "false"
+        {{- end }}
+        {{- if .Values.features.logging }}
+        - name: LOG_LEVEL
+          value: "info"
+        {{- end }}
+        {{- if .Values.features.caching }}
+        - name: CACHE_ENABLED
+          value: "true"
+        - name: CACHE_TTL
+          value: "3600"
+        {{- end }}
+        {{- if .Values.features.tracing }}
+        - name: TRACING_ENABLED
+          value: "true"
+        {{- end }}
+        {{- if .Values.persistence.enabled }}
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        {{- end }}
+      {{- if .Values.persistence.enabled }}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-condapp-pvc
+      {{- end }}

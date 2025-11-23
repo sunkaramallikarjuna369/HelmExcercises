@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-webservice-nodeport
+  labels:
+    app: {{ .Release.Name }}-webservice
+    type: nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+    nodePort: {{ .Values.service.nodePort }}
+  selector:
+    app: {{ .Release.Name }}-webservice

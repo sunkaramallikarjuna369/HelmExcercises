@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-configapp
+  labels:
+    app: {{ .Release.Name }}-configapp
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-configapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-configapp
+    spec:
+      containers:
+      - name: configapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+        env:
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-configapp
+              key: app.name
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-configapp
+              key: log.level
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-configapp
+              key: database.host
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-configapp
+              key: database.port
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-configapp
+              key: database.name
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-configapp-secret
+              key: database.password
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-configapp-secret
+              key: api.key
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-configapp-secret
+              key: jwt.secret
+        volumeMounts:
+        - name: config-files
+          mountPath: /etc/config
+          readOnly: true
+        - name: secret-files
+          mountPath: /etc/secrets
+          readOnly: true
+      volumes:
+      - name: config-files
+        configMap:
+          name: {{ .Release.Name }}-configapp-files
+      - name: secret-files
+        secret:
+          secretName: {{ .Release.Name }}-configapp-secret-files

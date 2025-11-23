@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configapp
+  labels:
+    app: {{ .Release.Name }}-configapp
+data:
+  app.name: {{ .Values.config.appName | quote }}
+  log.level: {{ .Values.config.logLevel | quote }}
+  database.host: {{ .Values.config.database.host | quote }}
+  database.port: {{ .Values.config.database.port | quote }}
+  database.name: {{ .Values.config.database.name | quote }}
+  features.json: |
+    {{- .Values.config.features | toJson | nindent 4 }}

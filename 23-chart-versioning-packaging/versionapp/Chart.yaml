@@ -1,0 +1,6 @@
+apiVersion: v2
+name: versionapp
+description: Chart versioning and packaging
+type: application
+version: 0.1.0
+appVersion: "1.0"

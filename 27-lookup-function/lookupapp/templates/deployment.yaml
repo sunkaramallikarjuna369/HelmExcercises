@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-lookupapp
+  labels:
+    app: {{ .Release.Name }}-lookupapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-lookupapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-lookupapp
+    spec:
+      containers:
+      - name: lookupapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-sidecarapp
+  labels:
+    app: {{ .Release.Name }}-sidecarapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-sidecarapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-sidecarapp
+    spec:
+      containers:
+      - name: sidecarapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80

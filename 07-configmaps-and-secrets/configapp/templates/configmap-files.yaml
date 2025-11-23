@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configapp-files
+  labels:
+    app: {{ .Release.Name }}-configapp
+data:
+{{- range $key, $value := .Values.configFiles }}
+  {{ $key }}: |
+{{ $value | indent 4 }}
+{{- end }}

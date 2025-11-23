@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-bestapp
+  labels:
+    app: {{ .Release.Name }}-bestapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-bestapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-bestapp
+    spec:
+      containers:
+      - name: bestapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80

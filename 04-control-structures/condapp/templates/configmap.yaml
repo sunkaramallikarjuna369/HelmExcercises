@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-condapp-config
+  labels:
+    app: {{ .Release.Name }}-condapp
+data:
+  features.conf: |
+    # Enabled Features
+    {{- range $key, $value := .Values.features }}
+    {{- if $value }}
+    {{ $key }}: enabled
+    {{- end }}
+    {{- end }}
+  
+  {{- if .Values.monitoring.enabled }}
+  monitoring.conf: |
+    # Monitoring Configuration
+    enabled: true
+    metrics:
+    {{- range .Values.monitoring.metrics }}
+      - name: {{ .name }}
+        threshold: {{ .threshold }}
+    {{- end }}
+  {{- end }}
+  
+  environments.conf: |
+    # Environment Configurations
+    {{- range .Values.environments }}
+    - name: {{ .name }}
+      replicas: {{ .replicas }}
+    {{- end }}

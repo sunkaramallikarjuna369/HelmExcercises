@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-rbacapp
+  labels:
+    app: {{ .Release.Name }}-rbacapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-rbacapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-rbacapp
+    spec:
+      serviceAccountName: {{ include "rbacapp.serviceAccountName" . }}
+      containers:
+      - name: rbacapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80

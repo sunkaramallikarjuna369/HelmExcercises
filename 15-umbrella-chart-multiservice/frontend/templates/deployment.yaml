@@ -1,0 +1,36 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-frontend
+  labels:
+    app: {{ .Release.Name }}-frontend
+    tier: frontend
+    {{- if .Values.global }}
+    environment: {{ .Values.global.environment }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-frontend
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-frontend
+        tier: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+        env:
+        - name: BACKEND_URL
+          value: "http://{{ .Release.Name }}-backend:8080"
+        {{- if .Values.global }}
+        - name: ENVIRONMENT
+          value: {{ .Values.global.environment | quote }}
+        {{- end }}
+{{- end }}

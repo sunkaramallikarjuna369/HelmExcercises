@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helperapp.fullname" . }}-config
+  labels:
+    {{- include "helperapp.labels" . | nindent 4 }}
+data:
+  app.conf: |
+    name: {{ include "helperapp.name" . }}
+    fullname: {{ include "helperapp.fullname" . }}
+    chart: {{ include "helperapp.chart" . }}
+    image: {{ include "helperapp.image" . }}

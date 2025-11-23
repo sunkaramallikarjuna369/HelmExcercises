@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sidecarapp
+description: Init containers and sidecar patterns
+type: application
+version: 0.1.0
+appVersion: "1.0"

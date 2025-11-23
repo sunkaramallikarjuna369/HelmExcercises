@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-schedapp
+  labels:
+    app: {{ .Release.Name }}-schedapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-schedapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-schedapp
+    spec:
+      containers:
+      - name: schedapp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
